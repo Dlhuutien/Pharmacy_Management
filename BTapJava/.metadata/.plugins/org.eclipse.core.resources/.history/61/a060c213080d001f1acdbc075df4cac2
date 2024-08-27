@@ -1,0 +1,31 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.NhaCungCapDAO;
+import jakarta.persistence.EntityManager;
+
+public class NhaCungCap_Service extends UnicastRemoteObject implements NhaCungCapDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public NhaCungCap_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+
+	@Override
+	public String gettheoma(String ma) throws RemoteException {
+	    String tenNCC = null;
+	    try {
+	        Query query = entityManager.createQuery("SELECT ncc.tenNCC FROM NhaCungCap ncc WHERE ncc.maNCC = :ma");
+	        query.setParameter("ma", ma);
+	        tenNCC = (String) query.getSingleResult();
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return tenNCC;
+	}
+
+}

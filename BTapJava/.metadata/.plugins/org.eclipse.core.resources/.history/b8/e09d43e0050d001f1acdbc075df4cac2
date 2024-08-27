@@ -1,0 +1,11 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import entity.ChiTietThuoc;
+
+public interface ChiTietThuocDAO extends Remote{
+	public ArrayList<ChiTietThuoc> getalltptheomathuoc(String mathuoc) throws RemoteException;
+}

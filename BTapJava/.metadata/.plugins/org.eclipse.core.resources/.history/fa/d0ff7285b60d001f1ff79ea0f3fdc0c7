@@ -1,0 +1,28 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import entities.HoaDon;
+
+public interface HoaDonDAO extends Remote{
+//	public int getProductCodeCountByDateRange(Date fromDate, Date toDate) throws RemoteException;
+//	public int getInvoiceCountByDateRange(Date fromDate, Date toDate) throws RemoteException;
+//	public double getToTalByDateRange(Date fromDate, Date toDate) throws RemoteException;
+//	public int getProductNotCountByDateRange(Date fromDate, Date toDate) throws RemoteException;
+//	public List<Object[]> getTongTienDaBanByNhanVienAndDateRange(Date fromDate, Date toDate) throws RemoteException;
+//	public List<Object[]> getTongTien() throws RemoteException;
+//	public HoaDon getHoaDonByMaHD(String maHD) throws RemoteException;
+//	public int demSoLuongHoaDon();
+	public ArrayList<HoaDon> getAllHoaDon() throws RemoteException;
+	public ArrayList<HoaDon> getAllHoaDonByDateRange(Date fromDate, Date toDate) throws RemoteException;
+	public ArrayList<HoaDon> getHoaDonByMaHDLike(String maHD) throws RemoteException;
+	public ArrayList<HoaDon> getHoaDonBySoDienThoai(String soDienThoai) throws RemoteException;
+	ArrayList<HoaDon> getAllHoaDonByDateRange(LocalDate fromDate, LocalDate toDate) throws RemoteException;
+
+
+}

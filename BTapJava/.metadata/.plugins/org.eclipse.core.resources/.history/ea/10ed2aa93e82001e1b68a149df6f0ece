@@ -1,0 +1,38 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import connectDB.ConnectDB;
+import entity.NhanVien;
+import entity.TaiKhoanNhanVien;
+
+public class TaiKhoanNhanVien_DAO {
+	public boolean create(TaiKhoanNhanVien tk) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stmt = null;
+		int n = 0;
+		try {
+			stmt = con.prepareStatement("insert into"
+					+ " NhanVien values(?, ?, ?)");
+			stmt.setString(1,tk.getMaNV());
+			stmt.setString(2,tk.getTenNV());
+			stmt.setString(3,tk.isGioiTinh());
+			n = stmt.executeUpdate();						
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return n > 0; 
+	}
+}

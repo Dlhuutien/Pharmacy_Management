@@ -1,0 +1,12 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+
+public interface NhaCungCapDAO extends Remote{
+	public String gettheoma(String ma) throws RemoteException;
+	public ArrayList<String> getallten() throws RemoteException;
+	public ArrayList<String> getallma() throws RemoteException;
+}

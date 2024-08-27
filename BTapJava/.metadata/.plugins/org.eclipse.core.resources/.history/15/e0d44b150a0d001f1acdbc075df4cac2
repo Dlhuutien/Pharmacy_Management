@@ -1,0 +1,18 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.ThuocDAO;
+import jakarta.persistence.EntityManager;
+
+public class Thuoc_Service extends UnicastRemoteObject implements ThuocDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public Thuoc_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+	
+	
+}

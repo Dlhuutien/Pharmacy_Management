@@ -1,0 +1,32 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+
+import entities.Thuoc;
+
+public interface ThuocDAO extends Remote{
+	public boolean updateThuoc(Thuoc thuoc) throws RemoteException;
+	public ArrayList<Thuoc> getThuocKeDonList() throws RemoteException;
+	public int getMaxThuocID() throws RemoteException;
+
+	ArrayList<Thuoc> getThuocKoKeDonList() throws RemoteException;
+
+	ArrayList<Thuoc> getallthuocExpired() throws RemoteException;
+
+	ArrayList<Thuoc> getThuocByTenThuoc(String tenThuoc) throws RemoteException;
+
+	Thuoc getThuocByMa(String ma) throws RemoteException;
+
+	boolean deleteThuoc(String maThuoc) throws RemoteException;
+
+	boolean addThuoc(Thuoc thuoc) throws RemoteException;
+
+	int countThuoc() throws RemoteException;
+
+	boolean updateSoLuongTon(String maThuoc, int newSoLuongTon) throws RemoteException;
+
+	int getSoLuongTonByMaThuoc(String maThuoc) throws RemoteException;
+	
+}

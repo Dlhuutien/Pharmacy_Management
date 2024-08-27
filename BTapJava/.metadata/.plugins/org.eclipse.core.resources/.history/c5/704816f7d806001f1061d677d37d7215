@@ -1,0 +1,40 @@
+package entity;
+
+public class ChiTietThuoc {
+	private String ma;
+	private Thuoc thuoc;
+	private ThanhPhan thanhphan;
+	public ChiTietThuoc(String ma, Thuoc thuoc, ThanhPhan thanhphan) {
+		super();
+		this.ma = ma;
+		this.thuoc = thuoc;
+		this.thanhphan = thanhphan;
+	}
+	public ChiTietThuoc(String ma) {
+		super();
+		this.ma = ma;
+	}
+	public String getMa() {
+		return ma;
+	}
+	public void setMa(String ma) {
+		this.ma = ma;
+	}
+	public Thuoc getThuoc() {
+		return thuoc;
+	}
+	public void setThuoc(Thuoc thuoc) {
+		this.thuoc = thuoc;
+	}
+	public ThanhPhan getThanhphan() {
+		return thanhphan;
+	}
+	public void setThanhphan(ThanhPhan thanhphan) {
+		this.thanhphan = thanhphan;
+	}
+	@Override
+	public String toString() {
+		return "ChiTietThuoc [ma=" + ma + ", thuoc=" + thuoc + ", thanhphan=" + thanhphan + "]";
+	}
+	
+}

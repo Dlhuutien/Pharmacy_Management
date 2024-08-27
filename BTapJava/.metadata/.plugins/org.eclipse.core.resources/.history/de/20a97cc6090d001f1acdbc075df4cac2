@@ -1,0 +1,20 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+import entities.ThanhPhan;
+
+public interface ThanhPhanDAO extends Remote{
+
+	String gettptheoma(String ma) throws RemoteException;
+
+	boolean create(ThanhPhan tp) throws RemoteException;
+
+	int countThanhPhan() throws RemoteException;
+
+	boolean exists(String tenTP) throws RemoteException;
+
+	String getMaTPByTenTP(String tenTP) throws RemoteException;
+
+}

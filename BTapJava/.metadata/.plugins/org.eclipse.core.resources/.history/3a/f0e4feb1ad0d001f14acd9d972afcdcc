@@ -1,0 +1,15 @@
+package gui;
+
+public class Snippet {
+	Registry registry = LocateRegistry.getRegistry("127.0.0.1", 2005);
+			try {
+				ct_dao = (ChiTietThuocDAO) registry.lookup("ChiTietThuocDAO");
+				tp_dao = (ThanhPhanDAO) registry.lookup("ThanhPhanDAO");
+				ncc_dao = (NhaCungCapDAO) registry.lookup("NhaCungCapDAO");
+				thuoc_dao = (ThuocDAO) registry.lookup("ThuocDAO");
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				throw new Exception("Không thể kết nối đến máy chủ RMI");
+			}
+}
+

@@ -1,0 +1,117 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.sql.SQLException;
+
+import javax.swing.JOptionPane;
+
+import dao.DoiMatKhauDAO;
+import entities.TaiKhoanNhanVien;
+import entities.TaiKhoanQuanLy;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
+
+public class DoiMatKhau_Service extends UnicastRemoteObject implements DoiMatKhauDAO {
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public DoiMatKhau_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public boolean ktraTaiKhoan(String username, String password) {
+	    try {
+	        String queryStr;
+	        if (username.matches("QL\\d+")) {
+	            queryStr = "SELECT COUNT(*) FROM TaiKhoanQuanLy WHERE taiKhoan = :username AND matKhau = :password";
+	        } else if (username.matches("NV\\d+")) {
+	            queryStr = "SELECT COUNT(*) FROM TaiKhoanNhanVien WHERE taiKhoan = :username AND matKhau = :password";
+	        } else {
+	            return false;
+	        }
+
+	        Query query = entityManager.createQuery(queryStr);
+	        query.setParameter("username", username);
+	        query.setParameter("password", password);
+
+	        // Kiểm tra xem có bản ghi nào khớp với tên người dùng và mật khẩu không
+	        return (Long) query.getSingleResult() > 0;
+	    } catch (Exception ex) {
+	        ex.printStackTrace(); 
+	        return false; 
+	    }
+	}
+
+
+	@Override
+	public void thucHienDoiMK(String username, char[] newPass) throws RemoteException {
+		if (user.matches("QL\\d+")) {
+			String sql = "UPDATE TaiKhoanQuanLy SET matKhau = ? WHERE taiKhoan = ?";
+			try {
+				char[] pass = txtMKMoi.getPassword();
+				String pwd = new String(pass);
+				stmt = con.prepareStatement(sql);
+				stmt.setString(1, pwd);
+				stmt.setString(2, user);
+				stmt.executeUpdate();
+				stmt.close();
+				JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			String sql = "UPDATE TaiKhoanNhanVien SET matKhau = ? WHERE taiKhoan = ?";
+			try {
+				char[] pass = txtMKMoi.getPassword();
+				String pwd = new String(pass);
+				stmt = con.prepareStatement(sql);
+				stmt.setString(1, pwd);
+				stmt.setString(2, user);
+				stmt.executeUpdate();
+				stmt.close();
+				JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công");
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
+	public boolean update(TaiKhoanNhanVien nhanVien) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.merge(nhanVien);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean update(TaiKhoanQuanLy quanLy) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.merge(quanLy);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+}

@@ -1,0 +1,19 @@
+package entity;
+
+public class TaiKhoanQuanLy {
+	private String taiKhoan;
+	private String matKhau;
+	private String maQL;
+	public TaiKhoanQuanLy(String taiKhoan, String matKhau, String maQL) {
+		super();
+		this.taiKhoan = taiKhoan;
+		this.matKhau = matKhau;
+		this.maQL = maQL;
+	}
+	public TaiKhoanQuanLy(String maQL) {
+		super();
+		this.maQL = maQL;
+		this.taiKhoan = maQL;
+	}
+	
+}

@@ -1,0 +1,35 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.ThuocDAO;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+
+public class Thuoc_Service extends UnicastRemoteObject implements ThuocDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public Thuoc_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+	
+	 @Override
+	    public boolean updateThuoc(Thuoc thuoc) throws RemoteException {
+	        EntityTransaction trans = entityManager.getTransaction();
+	        try {
+	            trans.begin();
+	            entityManager.merge(thuoc);
+	            trans.commit();
+	            return true;
+	        } catch (Exception e) {
+	            if (trans.isActive()) {
+	                trans.rollback();
+	            }
+	            e.printStackTrace();
+	            return false;
+	        }
+	    }
+
+}

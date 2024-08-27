@@ -1,0 +1,15 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.ChiTietThuocDAO;
+import jakarta.persistence.EntityManager;
+
+public class ChiTietThuoc_Service extends UnicastRemoteObject implements ChiTietThuocDAO{
+	private EntityManager entityManager;
+
+	public ChiTietThuoc_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+}

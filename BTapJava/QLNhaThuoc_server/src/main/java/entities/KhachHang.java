@@ -1,0 +1,63 @@
+package entities;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
+
+@Entity
+public class KhachHang implements Serializable{
+	private static final long serialVersionUID = 1L;
+	@Id
+	private String soDienThoai;
+	private String tenKH;
+	private LocalDate ngaySinh;
+	private Boolean gioiTinh;
+	private int diem;
+	private String hang;
+
+	public String xepHang() {
+		if (diem >=0 && diem <= 500000) {
+			return "D";
+		}
+		if (diem >= 500000 && diem <= 1000000) {
+			return "C";
+		}
+		if (diem >= 1000000 && diem <= 10000000) {
+			return "B";
+		}
+		if (diem > 10000000) {
+			return "A";
+		} 
+		return "D";
+	}
+
+	public KhachHang(String tenKH, LocalDate ngaySinh, Boolean gioiTinh, int diem, String hang) {
+		super();
+		this.tenKH = tenKH;
+		this.ngaySinh = ngaySinh;
+		this.gioiTinh = gioiTinh;
+		this.diem = diem;
+		this.hang = hang;
+	}
+
+	public KhachHang(String soDienThoai) {
+		super();
+		this.soDienThoai = soDienThoai;
+	}
+	
+}

@@ -1,0 +1,8 @@
+package entities;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface DoiMatKhauDAO extends Remote{
+	blic boolean ktraTaiKhoan(String username, String password) throws RemoteException;
+}

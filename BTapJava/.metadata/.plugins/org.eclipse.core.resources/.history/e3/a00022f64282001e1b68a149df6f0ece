@@ -1,0 +1,102 @@
+package dao;
+
+import java.awt.Checkbox;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import connectDB.ConnectDB;
+import entity.NhanVien;
+import gui.DangNhap_UI;
+import gui.NhanVien_UI;
+import gui.Quanly_UI;
+
+public class DangNhap_DAO extends JFrame{
+	public DangNhap_DAO() {};
+	public void dNhap(JTextField txtTaiKhoan, JPasswordField txtMatKhau, JCheckBox chkQuanLy, JLabel lblError) {
+		PreparedStatement stmt = null;
+		Connection con = ConnectDB.getConnection();
+		try (Statement statement = con.createStatement()) {
+			String user = txtTaiKhoan.getText();
+			char[] pass = txtMatKhau.getPassword();
+			boolean phanQuyen = chkQuanLy.isSelected();
+			if (phanQuyen){
+				String sql = "SELECT * FROM TaiKhoanQuanLy WHERE taikhoan = ? AND matkhau = ?";
+				stmt = con.prepareStatement(sql);
+				stmt.setString(1, user);
+				String pwd = new String(pass);
+				stmt.setString(2, pwd);
+				ResultSet rs = stmt.executeQuery();
+				if (rs.next()) {
+					new Quanly_UI().setVisible(true);
+				} else {
+					lblError.setText("Vui lòng kiểm tra: tên tài khoản phải bắt đầu bằng QT__ hoặc NV__");
+					JOptionPane.showMessageDialog(this, "Tên tài khoản hoặc mật khẩu không đúng");
+					txtMatKhau.setText("");
+					txtMatKhau.requestFocus();
+				}
+				rs.close();
+				stmt.close();	
+			}
+			else {
+				String sql = "SELECT * FROM TaiKhoanNhanVien WHERE taikhoan = ? AND matkhau = ?";
+				stmt = con.prepareStatement(sql);
+				stmt.setString(1, user);
+				String pwd = new String(pass);
+				stmt.setString(2, pwd);
+				ResultSet rs = stmt.executeQuery();
+				if (rs.next()) {
+					new NhanVien_UI().setVisible(true);
+				} else {
+					lblError.setText("Vui lòng kiểm tra: tên tài khoản phải bắt đầu bằng QT__ hoặc NV__");
+					JOptionPane.showMessageDialog(this, "Tên tài khoản hoặc mật khẩu không đúng");
+					txtMatKhau.setText("");
+					txtMatKhau.requestFocus();
+				}
+				rs.close();
+				stmt.close();	
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	public String getMaNhanVien() {
+		String ma = "";
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+
+			String sql = "Select * from DangNhap where ";
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+
+			while (rs.next()) {
+				String maNV = rs.getString("maNV");
+				String tenNV = rs.getString("tenNV");
+				boolean gioiTinh = rs.getBoolean("gioiTinh");
+				String soDienThoai = rs.getString("soDienThoai");
+				Date ns = rs.getDate("ngaySinh");
+				LocalDate ngaySinh = ns.toLocalDate();
+				double luong = rs.getDouble("luongCoBan");
+				NhanVien nv = new NhanVien(maNV, tenNV, gioiTinh, soDienThoai, ngaySinh, luong);
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return ma;
+	}
+}

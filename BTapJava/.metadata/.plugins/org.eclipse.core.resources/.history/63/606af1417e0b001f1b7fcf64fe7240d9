@@ -1,0 +1,9 @@
+package gui;
+
+public class Snippet {
+	public static void main(String[] args) {
+		lbtNgaySinh.setText(ql.getNgaySinh() != null ? ql.getNgaySinh().toString() : "");
+		
+	}
+}
+

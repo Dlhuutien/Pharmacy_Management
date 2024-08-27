@@ -1,0 +1,87 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.ThanhPhanDAO;
+import entities.ThanhPhan;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
+
+public class ThanhPhan_Service extends UnicastRemoteObject implements ThanhPhanDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public ThanhPhan_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+	
+	 @Override
+	    public String gettptheoma(String ma) throws RemoteException {
+	        String tenTP = "";
+	        try {
+	            Query query = entityManager.createQuery("SELECT tp.tenTP FROM ThanhPhan tp WHERE tp.maTP = :ma");
+	            query.setParameter("ma", ma);
+	            tenTP = (String) query.getSingleResult();
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	        return tenTP;
+	    }
+
+	    @Override
+	    public boolean create(ThanhPhan tp) throws RemoteException {
+	        EntityTransaction trans = entityManager.getTransaction();
+	        try {
+	            trans.begin();
+	            entityManager.persist(tp);
+	            trans.commit();
+	            return true;
+	        } catch (Exception e) {
+	            if (trans.isActive()) {
+	                trans.rollback();
+	            }
+	            e.printStackTrace();
+	            return false;
+	        }
+	    }
+
+	    @Override
+	    public int countThanhPhan() throws RemoteException {
+	        int count = 0;
+	        try {
+	            Query query = entityManager.createQuery("SELECT COUNT(tp) FROM ThanhPhan tp");
+	            count = ((Number) query.getSingleResult()).intValue();
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	        return count;
+	    }
+
+	    @Override
+	    public boolean exists(String tenTP) throws RemoteException {
+	        try {
+	            Query query = entityManager.createQuery("SELECT tp FROM ThanhPhan tp WHERE tp.tenTP = :tenTP");
+	            query.setParameter("tenTP", tenTP);
+	            return !query.getResultList().isEmpty();
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	            return false;
+	        }
+	    }
+
+	    @Override
+	    public String getMaTPByTenTP(String tenTP) throws RemoteException {
+	        String maTP = "";
+	        try {
+	            Query query = entityManager.createQuery("SELECT tp.maTP FROM ThanhPhan tp WHERE tp.tenTP = :tenTP");
+	            query.setParameter("tenTP", tenTP);
+	            maTP = (String) query.getSingleResult();
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	        return maTP;
+	    }
+}
+

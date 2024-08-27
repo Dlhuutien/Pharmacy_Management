@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="selection" value="getAllChiTietThuocIDs"/>
+		<item key="wrap" value="true"/>
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="incremental" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<list key="findhistory">
+			<item value="getAllChiTietThuocIDs"/>
+			<item value="addThuoc"/>
+			<item value="deleteChiTietHoaDonByMaThuoc"/>
+			<item value="getHoaDonByMaHD"/>
+			<item value="capNhatDiemHang"/>
+			<item value="updateTongTien"/>
+			<item value="getTongTienByMaHD"/>
+			<item value="create("/>
+			<item value="create"/>
+			<item value="getThanhTienByMaThuocAndMaHoaDon"/>
+			<item value="themChiTietHoaDon"/>
+			<item value="themHoaDon"/>
+			<item value="getKhachHangBySoDienThoai"/>
+			<item value="demSoLuongHoaDon"/>
+			<item value="qlkh_dao"/>
+		</list>
+		<list key="replacehistory">
+			<item value="tableThuoc"/>
+			<item value=""/>
+			<item value="TenNCC"/>
+			<item value="QuanLyNhanVien_GUI"/>
+			<item value="NhanVien_UI"/>
+			<item value="NV"/>
+			<item value="NhanVien"/>
+			<item value="TaiKhoanNhanVien"/>
+			<item value="maNV"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="1115"/>
+		<item key="DIALOG_Y_ORIGIN" value="422"/>
+		<item key="DIALOG_WIDTH" value="511"/>
+		<item key="DIALOG_HEIGHT" value="523"/>
+		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>
+	</section>
+</section>

@@ -1,0 +1,37 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+
+import dao.TaiKhoanNhanVienDAO;
+import entities.TaiKhoanNhanVien;
+
+public class TaiKhoanNhanVien_Service extends UnicastRemoteObject implements TaiKhoanNhanVienDAO{
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public boolean create(TaiKhoanNhanVien tk) throws RemoteException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean xoa(String ma) throws RemoteException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ArrayList<TaiKhoanNhanVien> getAllTaiKhoan() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TaiKhoanNhanVien timTaiKhoanTheoTaiKhoan(String taiKhoan) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

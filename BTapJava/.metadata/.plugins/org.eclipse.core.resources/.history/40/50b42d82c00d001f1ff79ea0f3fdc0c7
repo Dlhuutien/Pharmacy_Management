@@ -1,0 +1,41 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+
+import dao.ChiTietHoaDonDAO;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
+public class ChiTietHoaDon_Service extends UnicastRemoteObject implements ChiTietHoaDonDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public ChiTietHoaDon_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+    public List<Object[]> getThongKeSanPhamByDateRange(Date fromDate, Date toDate) throws RemoteException {
+        List<Object[]> resultList = new ArrayList<>();
+        try {
+            String jpql = "SELECT cthd.thuoc.tenThuoc, SUM(cthd.soLuong), cthd.thuoc.soLuongTon "
+                        + "FROM ChiTietHoaDon cthd "
+                        + "JOIN cthd.thuoc "
+                        + "JOIN cthd.hoaDon hd "
+                        + "WHERE hd.ngayMua BETWEEN :fromDate AND :toDate "
+                        + "GROUP BY cthd.thuoc.tenThuoc, cthd.thuoc.soLuongTon";
+            Query query = entityManager.createQuery(jpql);
+            query.setParameter("fromDate", fromDate);
+            query.setParameter("toDate", toDate);
+            resultList = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+}

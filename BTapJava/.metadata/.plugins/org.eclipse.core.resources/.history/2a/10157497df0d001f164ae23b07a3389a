@@ -1,0 +1,147 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import connectDB.ConnectDB;
+import entity.ChiTietThuoc;
+import entity.NhaCungCap;
+import entity.ThanhPhan;
+import entity.Thuoc;
+
+public class ChiTietThuoc_DAO {
+
+	public ArrayList<ChiTietThuoc> getalltptheomathuoc(String mathuoc) {
+		ArrayList<ChiTietThuoc> dstp = new ArrayList<ChiTietThuoc>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement statement = null;
+		try {
+			String sql = "Select * from ChiTietThuoc where maThuoc = ?";
+			statement = con.prepareStatement(sql);
+			statement.setString(1, mathuoc);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String ma = rs.getString("maTT");
+				String maTP = rs.getString("maTP");
+				Thuoc thuoc = new Thuoc(mathuoc);
+				ThanhPhan tp = new ThanhPhan(maTP);
+				ChiTietThuoc ct = new ChiTietThuoc(ma, thuoc, tp);
+				dstp.add(ct);
+
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return dstp;
+	}
+
+	public ArrayList<String> getAllChiTietThuocIDs() {
+		ArrayList<String> ids = new ArrayList<>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		Statement statement = null;
+		ResultSet rs = null;
+
+		try {
+			String sql = "SELECT maTP FROM ChiTietThuoc";
+			statement = con.createStatement();
+			rs = statement.executeQuery(sql);
+
+			while (rs.next()) {
+				String maTT = rs.getString("maTT");
+				ids.add(maTT);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ids;
+	}
+
+	public boolean addChiTietThuoc(ChiTietThuoc chiTietThuoc) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = con.prepareStatement("INSERT INTO ChiTietThuoc VALUES (?, ?, ?)");
+			stmt.setString(1, chiTietThuoc.getMa());
+			stmt.setString(2, chiTietThuoc.getThanhphan().getMaTP());
+			stmt.setString(3, chiTietThuoc.getThuoc().getMaThuoc());
+
+			int n = stmt.executeUpdate();
+
+			return n > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return false;
+	}
+
+	public int countChiTietThuoc() {
+		int count = 0;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+			String sql = "SELECT COUNT(*) AS count FROM ChiTietThuoc";
+			statement = con.prepareStatement(sql);
+			rs = statement.executeQuery();
+
+			if (rs.next()) {
+				count = rs.getInt("count");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (statement != null) {
+					statement.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return count;
+	}
+
+	public boolean deleteChiTietThuocByMaThuoc(String maThuoc) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = con.prepareStatement("DELETE FROM ChiTietThuoc WHERE maThuoc = ?");
+			stmt.setString(1, maThuoc);
+
+			int n = stmt.executeUpdate();
+
+			return n > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+}

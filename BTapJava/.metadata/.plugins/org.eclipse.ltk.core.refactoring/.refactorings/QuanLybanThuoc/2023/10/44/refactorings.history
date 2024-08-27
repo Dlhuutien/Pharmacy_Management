@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;gui.UI_TrangChuNhanVien&apos; to &apos;TrangChuNhanVien&apos;&#x0D;&#x0A;- Original project: &apos;QuanLybanThuoc&apos;&#x0D;&#x0A;- Original element: &apos;gui.UI_TrangChuNhanVien&apos;&#x0D;&#x0A;- Renamed element: &apos;gui.TrangChuNhanVien&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;UI_TrangChuNhanVien&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;gui{UI_TrangChuNhanVien.java[UI_TrangChuNhanVien" matchStrategy="1" name="TrangChuNhanVien" qualified="false" references="true" similarDeclarations="false" stamp="1698731110994" textual="false" version="1.0"/>
+</session>

@@ -1,0 +1,7 @@
+package services;
+
+import java.rmi.server.UnicastRemoteObject;
+
+public class QuanLy_Service extends UnicastRemoteObject implements QuanLy_DAO{
+
+}

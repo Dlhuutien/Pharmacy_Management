@@ -1,0 +1,14 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+import entities.TaiKhoanNhanVien;
+import entities.TaiKhoanQuanLy;
+
+public interface DoiMatKhauDAO extends Remote{
+	public boolean ktraTaiKhoan(String username, String password) throws RemoteException;
+	public void thucHienDoiMK(String username, String newPass) throws RemoteException;
+//	public boolean updateNV(TaiKhoanNhanVien nhanVien) throws RemoteException;
+//	public boolean updateQL(TaiKhoanQuanLy quanLy) throws RemoteException;
+}

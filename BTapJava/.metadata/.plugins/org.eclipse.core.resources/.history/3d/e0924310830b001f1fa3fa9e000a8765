@@ -1,0 +1,31 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.NhanVienDAO;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
+public class NhanVien_Service extends UnicastRemoteObject implements NhanVienDAO {
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public NhanVien_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public int getMaxEmployeeID() throws RemoteException {
+		int maxEmployeeID = 0;
+		Query query = entityManager
+				.createQuery("SELECT MAX(CAST(SUBSTRING(nv.maNV, 3, LENGTH(nv.maNV) - 2) AS INT)) FROM NhanVien nv");
+		Object result = query.getSingleResult();
+		if (result != null) {
+			maxEmployeeID = (int) result;
+		}
+
+		return maxEmployeeID;
+	}
+
+}

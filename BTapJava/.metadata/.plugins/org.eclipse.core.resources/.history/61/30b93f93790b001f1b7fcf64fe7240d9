@@ -1,0 +1,9 @@
+package dao;
+
+import java.rmi.Remote;
+
+import entities.QuanLy;
+
+public interface QuanLy_DAO extends Remote{
+	QuanLy getQuanLyTheoMaQL(String id);
+}

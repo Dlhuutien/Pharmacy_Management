@@ -1,0 +1,13 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.sql.Date;
+
+public interface HoaDonDAO extends Remote{
+	public int getProductCodeCountByDateRange(Date fromDate, Date toDate) throws RemoteException;
+	public int getInvoiceCountByDateRange(Date fromDate, Date toDate) throws RemoteException
+
+
+
+}

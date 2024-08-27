@@ -1,0 +1,9 @@
+package services;
+
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.TaiKhoanNhanVienDAO;
+
+public class TaiKhoanNhanVien_Service extends UnicastRemoteObject implements TaiKhoanNhanVienDAO{
+
+}

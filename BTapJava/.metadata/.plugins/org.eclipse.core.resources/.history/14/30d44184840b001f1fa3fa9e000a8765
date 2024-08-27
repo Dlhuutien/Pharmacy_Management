@@ -1,0 +1,8 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface NhanVienDAO extends Remote{
+	public int getMaxEmployeeID() throws RemoteException;
+}

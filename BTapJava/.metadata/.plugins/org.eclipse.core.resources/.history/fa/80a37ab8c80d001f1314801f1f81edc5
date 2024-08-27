@@ -1,0 +1,202 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import dao.HoaDonDAO;
+import entities.HoaDon;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+
+public class HoaDon_Service extends UnicastRemoteObject implements HoaDonDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public HoaDon_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public ArrayList<HoaDon> getAllHoaDon() throws RemoteException {
+	    ArrayList<HoaDon> hoaDonList = new ArrayList<>();
+	    try {
+	        Query query = entityManager.createQuery("SELECT hd FROM HoaDon hd");
+	        @SuppressWarnings("unchecked")
+			List<HoaDon> results = query.getResultList();
+	        for (HoaDon hd : results) {
+	            hoaDonList.add(hd);
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return hoaDonList;
+	}
+	
+	@Override
+	public ArrayList<HoaDon> getAllHoaDonByDateRange(LocalDate fromDate, LocalDate toDate) throws RemoteException {
+	    ArrayList<HoaDon> hoaDonList = new ArrayList<>();
+	    try {
+	        Query query = entityManager.createQuery("SELECT hd FROM HoaDon hd WHERE hd.ngayMua BETWEEN :fromDate AND :toDate");
+	        query.setParameter("fromDate", fromDate);
+	        query.setParameter("toDate", toDate);
+	        @SuppressWarnings("unchecked")
+	        List<HoaDon> results = query.getResultList();
+	        
+	        for (HoaDon hd : results) {
+	            hoaDonList.add(hd);
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return hoaDonList;
+	}
+
+
+	
+	@Override
+	public ArrayList<HoaDon> getHoaDonByMaHDLike(String maHD) throws RemoteException {
+	    ArrayList<HoaDon> hoaDonList = new ArrayList<>();
+	    try {
+	        Query query = entityManager.createQuery("SELECT hd FROM HoaDon hd WHERE hd.maHD LIKE :maHD");
+	        query.setParameter("maHD", "%" + maHD + "%");
+	        @SuppressWarnings("unchecked")
+			List<HoaDon> results = query.getResultList();
+	        
+	        for (HoaDon hd : results) {
+	            hoaDonList.add(hd);
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return hoaDonList;
+	}
+	
+	@Override
+	public ArrayList<HoaDon> getHoaDonBySoDienThoai(String soDienThoai) throws RemoteException {
+	    ArrayList<HoaDon> hoaDonList = new ArrayList<>();
+	    try {
+	        Query query = entityManager.createQuery("SELECT hd FROM HoaDon hd WHERE hd.kh.soDienThoai LIKE :soDienThoai");
+	        query.setParameter("soDienThoai", "%" + soDienThoai + "%");
+	        @SuppressWarnings("unchecked")
+	        List<HoaDon> results = query.getResultList();
+	        
+	        for (HoaDon hd : results) {
+	            hoaDonList.add(hd);
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return hoaDonList;
+	}
+
+	@Override
+	public int getProductCodeCountByDateRange(LocalDate fromDate, LocalDate toDate) throws RemoteException {
+	    int productCodeCount = 0;
+	    try {
+	        String sql = "SELECT COUNT(DISTINCT Thuoc.maThuoc) AS SoLuongMaThuoc\n" + "FROM ChiTietHoaDon\n"
+					+ "JOIN Thuoc ON ChiTietHoaDon.maThuoc = Thuoc.maThuoc\n"
+					+ "JOIN HoaDon ON ChiTietHoaDon.maHoaDon = HoaDon.maHD\n"
+	                + "WHERE HoaDon.ngayMua BETWEEN :fromDate AND :toDate";
+	        
+	        Query query = entityManager.createQuery(sql);
+	        query.setParameter("fromDate", fromDate);
+	        query.setParameter("toDate", toDate);
+
+	        Object result = query.getSingleResult();
+	        if (result != null) {
+	            productCodeCount = ((Number) result).intValue();
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return productCodeCount;
+	}
+
+	@Override
+	public int getProductNotCountByDateRange(LocalDate fromDate, LocalDate toDate) throws RemoteException {
+	    int productNotCount = 0;
+	    try {
+	    	
+//	    	String sql = "SELECT\r\n" + "    COUNT(DISTINCT Thuoc.maThuoc) AS SoLuongMaThuocChuaBan\r\n" + "FROM\r\n"
+//					+ "    Thuoc\r\n" + "WHERE\r\n" + "    Thuoc.maThuoc NOT IN (\r\n"
+//					+ "        SELECT DISTINCT ChiTietHoaDon.maThuoc\r\n" + "        FROM ChiTietHoaDon\r\n"
+//					+ "        JOIN HoaDon ON ChiTietHoaDon.maHoaDon = HoaDon.maHD\r\n"
+//					+ "        WHERE HoaDon.ngayMua BETWEEN :fromDate AND :toDate)";
+	    	
+	        String sql = "SELECT COUNT(DISTINCT Thuoc.maThuoc) AS SoLuongMaThuocChuaBan FROM Thuoc WHERE Thuoc.maThuoc NOT IN (" +
+	                     "    SELECT DISTINCT ChiTietHoaDon.maThuoc " +
+	                     "    FROM ChiTietHoaDon" +
+	                     "    JOIN HoaDon ON ChiTietHoaDon.maHoaDon = HoaDon.maHD" +
+	                     "    WHERE HoaDon.ngayMua BETWEEN :fromDate AND :toDate)";
+	        
+	        Query query = entityManager.createQuery(sql);
+	        query.setParameter("fromDate", fromDate);
+	        query.setParameter("toDate", toDate);
+
+	        Object result = query.getSingleResult();
+	        if (result != null) {
+	            productNotCount = ((Number) result).intValue();
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return productNotCount;
+	}
+
+	@Override
+	public int getInvoiceCountByDateRange(LocalDate fromDate, LocalDate toDate) throws RemoteException {
+	    int invoiceCount = 0;
+	    try {
+	        String jpql = "SELECT COUNT(*) AS InvoiceCount FROM HoaDon i WHERE i.ngayMua BETWEEN :fromDate AND :toDate";
+	        Query query = entityManager.createQuery(jpql);
+	        query.setParameter("fromDate", fromDate);
+	        query.setParameter("toDate", toDate);
+	        Long result = (Long) query.getSingleResult();
+	        invoiceCount = result.intValue();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return invoiceCount;
+	}
+
+	@Override
+	public double getTotalByDateRange(LocalDate fromDate, LocalDate toDate) throws RemoteException {
+	    double total = 0;
+	    try {
+	        String jpql = "SELECT SUM(i.totalPrice) AS TongDoanhThu FROM HoaDon i WHERE i.ngayMua BETWEEN :fromDate AND :toDate";
+	        Query query = entityManager.createQuery(jpql);
+	        query.setParameter("fromDate", fromDate);
+	        query.setParameter("toDate", toDate);
+	        Double result = (Double) query.getSingleResult();
+	        if (result != null) {
+	            total = result;
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return total;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Object[]> getTongTienDaBanByNhanVienAndDateRange(LocalDate fromDate, LocalDate toDate) throws RemoteException {
+	    List<Object[]> resultList = new ArrayList<>();
+	    try {
+	        String jpql = "SELECT hd.nv.maNV, hd.nv.tenNV, SUM(hd.tongTien) "
+	                    + "FROM HoaDon hd "
+	                    + "WHERE hd.ngayMua BETWEEN :fromDate AND :toDate "
+	                    + "GROUP BY hd.nv.maNV, hd.nv.tenNV";
+	        Query query = entityManager.createQuery(jpql);
+	        query.setParameter("fromDate", fromDate);
+	        query.setParameter("toDate", toDate);
+	        resultList = query.getResultList();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	    return resultList;
+	}
+}

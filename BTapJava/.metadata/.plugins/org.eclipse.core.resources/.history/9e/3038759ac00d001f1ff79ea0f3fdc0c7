@@ -1,0 +1,10 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.sql.Date;
+import java.util.List;
+
+public interface ChiTietHoaDonDAO extends Remote{
+	public List<Object[]> getThongKeSanPhamByDateRange(Date fromDate, Date toDate) throws RemoteException;
+}

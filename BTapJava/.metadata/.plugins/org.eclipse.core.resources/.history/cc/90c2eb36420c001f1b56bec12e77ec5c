@@ -1,0 +1,118 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+
+import dao.NhanVienDAO;
+import entities.NhanVien;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
+
+public class NhanVien_Service extends UnicastRemoteObject implements NhanVienDAO {
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public NhanVien_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public int getMaxEmployeeID() throws RemoteException {
+		int maxEmployeeID = 0;
+		Query query = entityManager
+				.createQuery("SELECT MAX(CAST(SUBSTRING(nv.maNV, 3, LENGTH(nv.maNV) - 2) AS INT)) FROM NhanVien nv");
+		Object result = query.getSingleResult();
+		if (result != null) {
+			maxEmployeeID = (int) result;
+		}
+		return maxEmployeeID;
+	}
+
+	@Override
+	public ArrayList<NhanVien> getalltbNhanVien() throws RemoteException {
+	    ArrayList<NhanVien> dsnv = new ArrayList<>();
+	    try {
+	        Query query = entityManager.createQuery("SELECT nv FROM NhanVien nv");
+	        @SuppressWarnings("unchecked")
+			List<NhanVien> results = query.getResultList();
+	        for (NhanVien nv : results) {
+	            dsnv.add(nv);
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return dsnv;
+	}
+
+	@Override
+	public boolean create(NhanVien nv) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.persist(nv);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean xoa(String ma) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			NhanVien nhanVien = entityManager.find(NhanVien.class, ma);
+			entityManager.remove(nhanVien);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+
+	@Override
+	public boolean update(NhanVien nv) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.merge(nv);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+
+	}
+
+	@Override
+	public int countNhanVien() throws RemoteException {
+	    int cnt = 0;
+	    try {
+	        Query query = entityManager.createQuery("SELECT COUNT(nv) FROM NhanVien nv");
+	        cnt = ((Number) query.getSingleResult()).intValue();
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return cnt;
+	}
+
+
+
+}

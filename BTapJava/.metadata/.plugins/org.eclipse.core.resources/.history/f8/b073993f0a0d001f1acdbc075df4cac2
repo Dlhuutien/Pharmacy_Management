@@ -1,0 +1,75 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+
+import dao.ThuocDAO;
+import entities.Thuoc;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
+
+public class Thuoc_Service extends UnicastRemoteObject implements ThuocDAO {
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public Thuoc_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public boolean updateThuoc(Thuoc thuoc) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.merge(thuoc);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public ArrayList<Thuoc> getThuocKeDonList() throws RemoteException {
+		ArrayList<Thuoc> thuocList = new ArrayList<>();
+		try {
+			Query query = entityManager.createQuery("SELECT t FROM Thuoc t WHERE t.keDon = true");
+			thuocList = (ArrayList<Thuoc>) query.getResultList();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return thuocList;
+	}
+
+	@Override
+	public int getMaxThuocID() throws RemoteException {
+		int maxThuocID = 0;
+		try {
+			Query query = entityManager.createQuery("SELECT MAX(CAST(SUBSTRING(t.maThuoc, 3) AS INT)) FROM Thuoc t");
+			Object result = query.getSingleResult();
+			if (result != null) {
+				maxThuocID = ((Number) result).intValue();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return maxThuocID;
+	}
+	 @Override
+	    public ArrayList<Thuoc> getThuocKoKeDonList() throws RemoteException {
+	        ArrayList<Thuoc> thuocList = new ArrayList<>();
+	        try {
+	            Query query = entityManager.createQuery("SELECT t FROM Thuoc t WHERE t.keDon = false");
+	            thuocList = (ArrayList<Thuoc>) query.getResultList();
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
+	        return thuocList;
+	    }
+}

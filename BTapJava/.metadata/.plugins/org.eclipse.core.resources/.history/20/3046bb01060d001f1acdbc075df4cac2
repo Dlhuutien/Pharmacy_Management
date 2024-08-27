@@ -1,0 +1,9 @@
+package services;
+
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.ChiTietThuocDAO;
+
+public class ChiTietThuoc_Service extends UnicastRemoteObject implements ChiTietThuocDAO{
+
+}

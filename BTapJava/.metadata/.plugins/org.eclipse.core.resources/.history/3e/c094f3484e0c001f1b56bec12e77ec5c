@@ -1,0 +1,107 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import javax.swing.JOptionPane;
+
+import dao.DoiMatKhauDAO;
+import entities.TaiKhoanNhanVien;
+import entities.TaiKhoanQuanLy;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
+
+public class DoiMatKhau_Service extends UnicastRemoteObject implements DoiMatKhauDAO {
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public DoiMatKhau_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public boolean ktraTaiKhoan(String username, String password) {
+		try {
+			String queryStr;
+			if (username.matches("QL\\d+")) {
+				queryStr = "SELECT COUNT(*) FROM TaiKhoanQuanLy WHERE taiKhoan = :username AND matKhau = :password";
+				thucHienDoiMK(username, password);
+			} else if (username.matches("NV\\d+")) {
+				queryStr = "SELECT COUNT(*) FROM TaiKhoanNhanVien WHERE taiKhoan = :username AND matKhau = :password";
+			} else {
+				return false;
+			}
+
+			Query query = entityManager.createQuery(queryStr);
+			query.setParameter("username", username);
+			query.setParameter("password", password);
+
+			// Kiểm tra xem có bản ghi nào khớp với tên người dùng và mật khẩu không
+			return (Long) query.getSingleResult() > 0;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public void thucHienDoiMK(String username, char[] newPass) throws RemoteException {
+	    try {
+	        if (username.matches("QL\\d+")) {
+	            TaiKhoanQuanLy taiKhoanQuanLy = new TaiKhoanQuanLy(username);
+	            taiKhoanQuanLy.setMatKhau(new String(newPass)); 
+	            if (updateQL(taiKhoanQuanLy)) {
+	            	JOptionPane.showMessageDialog(null,  "Đổi mật khẩu thành công");
+	                return;
+	            }
+	        } else {
+	            TaiKhoanNhanVien taiKhoanNhanVien = new TaiKhoanNhanVien(username);
+	            taiKhoanNhanVien.setMatKhau(new String(newPass)); 
+	            if (updateNV(taiKhoanNhanVien)) {
+	            	JOptionPane.showMessageDialog(null,  "Đổi mật khẩu thành công");
+	                return;
+	            }
+	        }
+	        // Thông báo lỗi đến client
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        // Thông báo lỗi đến client
+	    }
+	}
+
+	@Override
+	public boolean updateNV(TaiKhoanNhanVien nhanVien) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.merge(nhanVien);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateQL(TaiKhoanQuanLy quanLy) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.merge(quanLy);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+}

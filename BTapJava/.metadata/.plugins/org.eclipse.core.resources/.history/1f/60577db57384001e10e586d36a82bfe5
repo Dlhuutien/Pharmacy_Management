@@ -1,0 +1,138 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+import connectDB.ConnectDB;
+import entity.ChiTietThuoc;
+import entity.NhaCungCap;
+import entity.NhanVien;
+import entity.Thuoc;
+
+public class Thuoc_DAO {
+	public ArrayList<Thuoc> getallthuoc() {
+		ArrayList<Thuoc> dst = new ArrayList<Thuoc>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+
+			String sql = "Select * from Thuoc";
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+
+			while (rs.next()) {
+				String ma = rs.getString("maThuoc");
+				String ten = rs.getString("tenThuoc");
+				String hinh = rs.getString("hinhThuoc");
+				boolean keDon = rs.getBoolean("keDon");
+				NhaCungCap nhaCC = new NhaCungCap(rs.getString("nhaCungCap"));
+				String noiCC = rs.getString("noiSanXuat");
+				Date nsx = rs.getDate("ngaySanXuat");
+				LocalDate ngaySX = nsx.toLocalDate(); 
+				Date nhh = rs.getDate("ngayHetHan");
+				LocalDate ngayHH = nhh.toLocalDate(); 
+				String dang = rs.getString("dangBaoChe");
+				double giaNhap = rs.getDouble("donGiaNhap");
+				double giaBan = rs.getDouble("donGiaBan");
+				int soluong = rs.getInt("soLuongTon");
+				Thuoc th = new Thuoc(ma, ten, hinh, keDon, nhaCC, noiCC, ngaySX, ngayHH, dang, giaNhap, giaBan, soluong);
+				dst.add(th);
+
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return dst;
+	}
+	public String getanhthuoc(String ma) {
+		String path = "";
+		PreparedStatement statement = null;
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+
+			String sql = "Select * from Thuoc where maThuoc = ? ";
+			statement=con.prepareStatement(sql);
+			statement.setString(1, ma);
+			ResultSet rs = statement.executeQuery();
+
+			while (rs.next()) {
+				path = rs.getString("hinhThuoc");
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return path;
+	}
+	public ArrayList<String> getalltenthuoc() {
+		ArrayList<String> dst = new ArrayList<String>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+
+			String sql = "Select * from Thuoc";
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(sql);
+
+			while (rs.next()) {
+				String ten = rs.getString("tenThuoc");
+				dst.add(ten);
+
+			}
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return dst;
+	}
+	public boolean addThuoc(Thuoc thuoc) {
+        ConnectDB.getInstance();
+        Connection con = ConnectDB.getConnection();
+        PreparedStatement stmt = null;
+
+        try {
+            // Chú ý rằng, câu lệnh SQL phải chứa tên cột của bảng NhanVien, không phải NhaCungCap
+            stmt = con.prepareStatement("INSERT INTO Thuoc (maThuoc, tenThuoc, hinhThuoc, keDon, nhaCungCap, noiSanXuat, ngaySanXuat, ngayHetHan, dangBaoChe, donGiaNhap, donGiaBan, soLuongTon) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            
+            // Thiết lập các giá trị cho câu lệnh SQL từ đối tượng thuoc
+            stmt.setString(1, thuoc.getMaThuoc());
+            stmt.setString(2, thuoc.getTenThuoc());
+            stmt.setString(3, thuoc.getHinhThuoc());
+            stmt.setBoolean(4, thuoc.isKeDon());
+            stmt.setString(5, thuoc.getNhaCungCap().getMaNCC());
+            stmt.setString(6, thuoc.getNoiSanXuat());
+            stmt.setDate(7, java.sql.Date.valueOf(thuoc.getNgaySanXuat()));
+            stmt.setDate(8, java.sql.Date.valueOf(thuoc.getNgayHetHan()));
+            stmt.setString(9, thuoc.getDangBaoChe());
+            stmt.setDouble(10, thuoc.getDonGiaNhap());
+            stmt.setDouble(11, thuoc.getDonGiaBan());
+            stmt.setInt(12, thuoc.getSoLuongTon());
+
+            // Thực hiện câu lệnh SQL
+            int n = stmt.executeUpdate();
+
+            // Trả về kết quả
+            return n > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
+    }
+}

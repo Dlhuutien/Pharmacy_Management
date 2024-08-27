@@ -1,0 +1,126 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+
+import dao.KhachHangDAO;
+import entities.KhachHang;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Query;
+
+public class KhachHang_Service extends UnicastRemoteObject implements KhachHangDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public KhachHang_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public int getMaxCustomerID() throws RemoteException {
+		int maxCustomerID = 0;
+	    Query query = entityManager.createQuery("SELECT MAX(CAST(SUBSTRING(kh.soDienThoai, 3, LENGTH(kh.soDienThoai) - 2) AS INTEGER)) FROM KhachHang kh");
+	    Object result = query.getSingleResult();
+	    if (result != null) {
+	        maxCustomerID = ((Number) result).intValue();
+	    }
+	    return maxCustomerID;
+	}
+
+	@Override
+	public ArrayList<KhachHang> getalltbKhachHang() throws RemoteException {
+		ArrayList<KhachHang> dskh = new ArrayList<>();
+	    try {
+	        Query query = entityManager.createQuery("SELECT kh FROM KhachHang kh");
+	        @SuppressWarnings("unchecked")
+			List<KhachHang> results = query.getResultList();
+	        for (KhachHang kh : results) {
+	            dskh.add(kh);
+	        }
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return dskh;
+	}
+
+	@Override
+	public boolean create(KhachHang kh) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.persist(kh);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean xoa(String ma) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			KhachHang khachHang = entityManager.find(KhachHang.class, ma);
+			entityManager.remove(khachHang);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean update(KhachHang kh) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.merge(kh);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public int countKhachHang() throws RemoteException {
+		int cnt = 0;
+	    try {
+	        Query query = entityManager.createQuery("SELECT COUNT(kh) FROM KhachHang kh");
+	        cnt = ((Number) query.getSingleResult()).intValue();
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	    }
+	    return cnt;
+	}
+
+	@Override
+	public KhachHang getKhachHangTheoMaKH(String id) throws RemoteException {
+		  KhachHang kh = null;
+		    try {
+		        Query query = entityManager.createQuery("SELECT kh FROM KhachHang kh WHERE kh.soDienThoai= :id");
+		        query.setParameter("id", id);
+		        kh = (KhachHang) query.getSingleResult();
+		    } catch (Exception ex) {
+		        ex.printStackTrace();
+		    }
+		    return kh;
+		}
+	
+}

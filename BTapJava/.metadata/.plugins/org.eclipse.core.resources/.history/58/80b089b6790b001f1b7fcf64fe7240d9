@@ -1,0 +1,17 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.QuanLy_DAO;
+import entities.QuanLy;
+
+public class QuanLy_Service extends UnicastRemoteObject implements QuanLy_DAO{
+
+	@Override
+	public QuanLy getQuanLyTheoMaQL(String id) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

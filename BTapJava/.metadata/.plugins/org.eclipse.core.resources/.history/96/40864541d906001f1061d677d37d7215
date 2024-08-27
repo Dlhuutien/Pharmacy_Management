@@ -1,0 +1,149 @@
+package entities;
+
+import java.time.LocalDate;
+import java.util.Objects;
+
+import com.toedter.calendar.JDateChooser;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class Thuoc {
+	private String maThuoc;
+	private String tenThuoc;
+	private String hinhThuoc;
+	private boolean keDon;
+	private NhaCungCap nhaCungCap;
+	private String noiSanXuat;
+	private LocalDate ngaySanXuat;
+	private LocalDate ngayHetHan;
+	private String dangBaoChe;
+	private double donGiaNhap;
+	private double donGiaBan;
+	private int soLuongTon;
+	//others
+	public boolean kiemTrahanThuoc() {
+		if (ngayHetHan.isBefore(LocalDate.now())) {
+			return true;
+		}
+		return false;
+	}
+	public Thuoc(String maThuoc, String tenThuoc, String hinhThuoc, boolean keDon, NhaCungCap nhaCungCap,
+			String noiSanXuat, LocalDate ngaySanXuat, LocalDate ngayHetHan, String dangBaoChe, double donGiaNhap,
+			double donGiaBan, int soLuongTon) {
+		super();
+		this.maThuoc = maThuoc;
+		this.tenThuoc = tenThuoc;
+		this.hinhThuoc = hinhThuoc;
+		this.keDon = keDon;
+		this.nhaCungCap = nhaCungCap;
+		this.noiSanXuat = noiSanXuat;
+		this.ngaySanXuat = ngaySanXuat;
+		this.ngayHetHan = ngayHetHan;
+		this.dangBaoChe = dangBaoChe;
+		this.donGiaNhap = donGiaNhap;
+		this.donGiaBan = donGiaBan;
+		this.soLuongTon = soLuongTon;
+	}
+	public Thuoc(String maThuoc) {
+		super();
+		this.maThuoc = maThuoc;
+	}
+	public Thuoc() {
+		super();
+	}
+	public String getMaThuoc() {
+		return maThuoc;
+	}
+	public void setMaThuoc(String maThuoc) {
+		this.maThuoc = maThuoc;
+	}
+	public String getTenThuoc() {
+		return tenThuoc;
+	}
+	public void setTenThuoc(String tenThuoc) {
+		this.tenThuoc = tenThuoc;
+	}
+	public String getHinhThuoc() {
+		return hinhThuoc;
+	}
+	public void setHinhThuoc(String hinhThuoc) {
+		this.hinhThuoc = hinhThuoc;
+	}
+	public boolean isKeDon() {
+		return keDon;
+	}
+	public void setKeDon(boolean keDon) {
+		this.keDon = keDon;
+	}
+	public NhaCungCap getNhaCungCap() {
+		return nhaCungCap;
+	}
+	public void setNhaCungCap(NhaCungCap nhaCungCap) {
+		this.nhaCungCap = nhaCungCap;
+	}
+	public String getNoiSanXuat() {
+		return noiSanXuat;
+	}
+	public void setNoiSanXuat(String noiSanXuat) {
+		this.noiSanXuat = noiSanXuat;
+	}
+	public LocalDate getNgaySanXuat() {
+		return ngaySanXuat;
+	}
+	public void setNgaySanXuat(LocalDate ngaySanXuat) {
+		this.ngaySanXuat = ngaySanXuat;
+	}
+	public LocalDate getNgayHetHan() {
+		return ngayHetHan;
+	}
+	public void setNgayHetHan(LocalDate ngayHetHan) {
+		this.ngayHetHan = ngayHetHan;
+	}
+	public String getDangBaoChe() {
+		return dangBaoChe;
+	}
+	public void setDangBaoChe(String dangBaoChe) {
+		this.dangBaoChe = dangBaoChe;
+	}
+	public double getDonGiaNhap() {
+		return donGiaNhap;
+	}
+	public void setDonGiaNhap(double donGiaNhap) {
+		this.donGiaNhap = donGiaNhap;
+	}
+	public double getDonGiaBan() {
+		return donGiaBan;
+	}
+	public void setDonGiaBan(double donGiaBan) {
+		this.donGiaBan = donGiaBan;
+	}
+	public int getSoLuongTon() {
+		return soLuongTon;
+	}
+	public void setSoLuongTon(int soLuongTon) {
+		this.soLuongTon = soLuongTon;
+	}
+	@Override
+	public String toString() {
+		return "Thuoc [maThuoc=" + maThuoc + ", tenThuoc=" + tenThuoc + ", hinhThuoc=" + hinhThuoc + ", keDon=" + keDon
+				+ ", nhaCungCap=" + nhaCungCap + ", noiSanXuat=" + noiSanXuat + ", ngaySanXuat=" + ngaySanXuat
+				+ ", ngayHetHan=" + ngayHetHan + ", dangBaoChe=" + dangBaoChe + ", donGiaNhap=" + donGiaNhap
+				+ ", donGiaBan=" + donGiaBan + ", soLuongTon=" + soLuongTon + "]";
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(maThuoc);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		Thuoc other = (Thuoc) obj;
+		return Objects.equals(maThuoc, other.maThuoc);
+	}
+	
+}
+

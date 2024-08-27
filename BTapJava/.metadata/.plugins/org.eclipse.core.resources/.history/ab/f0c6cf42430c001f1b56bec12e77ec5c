@@ -1,0 +1,67 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+
+import dao.TaiKhoanNhanVienDAO;
+import entities.NhanVien;
+import entities.TaiKhoanNhanVien;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+
+public class TaiKhoanNhanVien_Service extends UnicastRemoteObject implements TaiKhoanNhanVienDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public TaiKhoanNhanVien_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public boolean create(TaiKhoanNhanVien tk) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			entityManager.persist(tk);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean xoa(String ma) throws RemoteException {
+		EntityTransaction trans = entityManager.getTransaction();
+		try {
+			trans.begin();
+			TaiKhoanNhanVien taiKhoanNhanVien = entityManager.find(TaiKhoanNhanVien.class, ma);
+			entityManager.remove(taiKhoanNhanVien);
+			trans.commit();
+			return true;
+		} catch (Exception e) {
+			if (trans.isActive()) {
+				trans.rollback();
+			}
+			e.printStackTrace();
+		}
+		return false;	}
+
+	@Override
+	public ArrayList<TaiKhoanNhanVien> getAllTaiKhoan() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TaiKhoanNhanVien timTaiKhoanTheoTaiKhoan(String taiKhoan) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,170 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.sql.Date;
+
+import connectDB.ConnectDB;
+import entity.HoaDon;
+import entity.KhachHang;
+import entity.NhanVien;
+
+public class HoaDon_DAO {
+
+	public HoaDon getHoaDonByMaHD(String maHD) {
+		HoaDon hoaDon = null;
+
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+
+			String sql = "SELECT * FROM HoaDon WHERE maHD = ?";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+
+			// Set the parameter for the prepared statement
+			preparedStatement.setString(1, maHD);
+
+			ResultSet rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				// Extract data from the result set
+				NhanVien nv = new NhanVien(rs.getString("maNV"));
+				String maKH = rs.getString("maKH");
+				KhachHang kh = new KhachHang(maKH);
+				Date ngayMua = rs.getDate("ngayMua");
+				double thue = rs.getDouble("thue");
+				double tongTien = rs.getDouble("tongTien");
+
+				// Create a new HoaDon object
+				hoaDon = new HoaDon(maHD, nv, kh, ngayMua.toLocalDate(), thue, tongTien);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return hoaDon;
+	}
+
+	public int demSoLuongHoaDon() {
+		int soLuong = 0;
+
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+
+			String sql = "SELECT COUNT(*) AS soLuong FROM HoaDon";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+			ResultSet rs = preparedStatement.executeQuery();
+
+			if (rs.next()) {
+				soLuong = rs.getInt("soLuong");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return soLuong;
+	}
+
+	public boolean themHoaDon(HoaDon hoaDon) {
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+
+			String sql = "INSERT INTO HoaDon VALUES (?, ?, ?, ?, ?, ?)";
+			PreparedStatement preparedStatement = con.prepareStatement(sql);
+
+			// Thiết lập các giá trị cho câu lệnh SQL
+			preparedStatement.setString(1, hoaDon.getMaHD());
+			preparedStatement.setString(2, hoaDon.getNv().getMaNV());
+			preparedStatement.setString(3, hoaDon.getKh().getSoDienThoai());
+			preparedStatement.setDate(4, Date.valueOf(hoaDon.getNgayMua()));
+			preparedStatement.setDouble(5, hoaDon.getThue());
+			preparedStatement.setDouble(6, hoaDon.getTongTien());
+
+			// Thực hiện câu lệnh SQL để thêm dữ liệu
+			int rowsAffected = preparedStatement.executeUpdate();
+
+			if (rowsAffected > 0) {
+				System.out.println("Hóa đơn đã được thêm thành công.");
+				return true;
+			} else {
+				System.out.println("Không thể thêm hóa đơn.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public boolean updateTongTien(String maHD, double additionalAmount) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = con.prepareStatement("UPDATE HoaDon SET tongTien = ? WHERE maHD = ?");
+			stmt.setDouble(1, additionalAmount);
+			stmt.setString(2, maHD);
+
+			int n = stmt.executeUpdate();
+
+			return n > 0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (stmt != null) {
+					stmt.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return false;
+	}
+
+	public boolean kiemTraTonTaiHoaDon(String maHD) {
+		try (Connection con = ConnectDB.getConnection()) {
+			String sql = "SELECT COUNT(*) AS count FROM HoaDon WHERE maHD = ?";
+			try (PreparedStatement preparedStatement = con.prepareStatement(sql)) {
+				preparedStatement.setString(1, maHD);
+
+				try (ResultSet rs = preparedStatement.executeQuery()) {
+					if (rs.next()) {
+						int count = rs.getInt("count");
+						return count > 0; // If count is greater than 0, the bill exists
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false; // Error occurred or the bill does not exist
+	}
+
+	public double getTongTienByMaHD(String maHD) {
+		double tongTien = 0;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stmt = null;
+		try {
+			stmt = con.prepareStatement("Select * from HoaDon where maHD = ?");
+			stmt.setString(1, maHD);
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				tongTien = rs.getDouble("tongTien");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return tongTien;
+	}
+}

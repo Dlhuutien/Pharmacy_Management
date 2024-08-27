@@ -1,0 +1,24 @@
+JLabel lbHinhTH = new JLabel();
+		JLabel lbMaTH = new JLabel("Mã thu?c: ");
+		JLabel lbTenTPH = new JLabel("Tên thu?c: ");
+		JLabel lbKeDon = new JLabel("Kê ??n: ");
+		JLabel lbNhaCungCap = new JLabel("Nhà cung c?p: ");
+		JLabel lbNoiSanXuat = new JLabel("N?i s?n xu?t: ");
+		JLabel lbNgaySanXuat = new JLabel("Ngày s?n xu?t");
+		JLabel lbNgayHetHan = new JLabel("Ngày h?t h?n: ");
+		JLabel lbDangBaoChe = new JLabel("D?ng bào ch?: ");
+		JLabel lbDonGiaNhap = new JLabel("??n giá nh?p: ");
+		JLabel lbDonGiaBan = new JLabel("??n giá bán: ");
+		JLabel lbSoLuongNhap = new JLabel("S? l??ng nh?p vào: ");
+		
+		txtMaTH = new JTextField(20);
+		txtTenTH = new JTextField(20);
+		txtKeDon = new JTextField(20);
+		txtNhaCungCap = new JTextField(20);
+		txtNoiSanXuat = new JTextField(20);
+		txtNgaySanXuat = new JTextField(20);
+		JTextField txtNgayHetHan = new JTextField(20);
+		JTextField txtDangBaoChe = new JTextField(20);
+		JTextField txtDonGiaNhap = new JTextField(20);
+		JTextField txtDonGiaBan = new JTextField(20);
+		JTextField txtSoLuongNhap = new JTextField(20);

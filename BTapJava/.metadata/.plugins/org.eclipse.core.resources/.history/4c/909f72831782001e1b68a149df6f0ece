@@ -1,0 +1,56 @@
+package dao;
+
+import java.awt.Checkbox;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+import connectDB.ConnectDB;
+
+public class DangNhap_DAO extends JFrame{
+	public void dNhap(JTextField txtTaiKhoan, JPasswordField txtMatKhau, JCheckBox chkQuanLy, JLabel lblError) {
+		PreparedStatement stmt = null;
+		Connection con = ConnectDB.getConnection();
+		try (Statement statement = con.createStatement()) {
+			String user = txtTaiKhoan.getText();
+			char[] pass = txtMatKhau.getPassword();
+			boolean phanQuyen = chkQuanLy.isSelected();
+			if (phanQuyen){
+				String sql = "SELECT * FROM TaiKhoanQuanLy WHERE taikhoan = ? AND matkhau = ? AND phanQuyen = ?";
+				stmt = con.prepareStatement(sql);
+				stmt.setString(1, user);
+				String pwd = new String(pass);
+				stmt.setString(2, pwd);
+				stmt.setBoolean(3, phanQuyen);
+				ResultSet rs = stmt.executeQuery();
+				if (rs.next()) {
+					if (phanQuyen == true) {
+//						new TrangChuQuanLy().setVisible(true);
+						dispose();
+					}
+					else {
+						//
+					}
+				} else {
+					lblError.setText("Vui lòng kiểm tra: tên tài khoản phải bắt đầu bằng QT__ hoặc NV__");
+					JOptionPane.showMessageDialog(this, "Tên tài khoản hoặc mật khẩu không đúng");
+					txtMatKhau.setText("");
+					txtMatKhau.requestFocus();
+				}
+				rs.close();
+				stmt.close();	
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+}

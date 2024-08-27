@@ -1,0 +1,16 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import dao.ThanhPhanDAO;
+import jakarta.persistence.EntityManager;
+
+public class ThanhPhan_Service extends UnicastRemoteObject implements ThanhPhanDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+
+	public ThanhPhan_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+}

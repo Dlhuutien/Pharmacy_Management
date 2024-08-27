@@ -1,0 +1,60 @@
+package services;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+
+import dao.KhachHangDAO;
+import entities.KhachHang;
+import jakarta.persistence.EntityManager;
+
+public class KhachHang_Service extends UnicastRemoteObject implements KhachHangDAO{
+	private static final long serialVersionUID = 1L;
+	private EntityManager entityManager;
+	protected KhachHang_Service(EntityManager entityManager) throws RemoteException {
+		this.entityManager = entityManager;
+	}
+
+	@Override
+	public int getMaxCustomerID() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ArrayList<KhachHang> getalltbKhachHang() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean create(KhachHang kh) throws RemoteException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean xoa(String ma) throws RemoteException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean update(KhachHang kh) throws RemoteException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int countKhachHang() throws RemoteException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public KhachHang getKhachHangTheoMaKH(String id) throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

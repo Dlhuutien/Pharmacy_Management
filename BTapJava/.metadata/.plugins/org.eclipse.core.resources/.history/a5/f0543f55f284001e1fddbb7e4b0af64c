@@ -1,0 +1,178 @@
+package gui;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import com.toedter.calendar.JDateChooser;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+public class QuanLyKhachHang_GUI extends JPanel implements ActionListener, MouseListener {
+    private JTextField txtSoDienThoai;
+    private JTextField txtTen;
+    private JDateChooser txtNgaySinh;
+    private JCheckBox chkGioiTinh;
+    private JTextField txtDiem;
+    private JTextField txtHang;
+    private JTable table;
+    private JButton btnThem, btnXoa, btnSua;
+	private JTextField txtTim;
+	private Component tableNhanVien;
+	private JTable tableKhachHang;
+	private DefaultTableModel modelKhachHang;
+
+    public QuanLyKhachHang_GUI() {
+        setLayout(new BorderLayout());
+
+        // Phần North
+        JLabel lbSoDienThoai = new JLabel("Số điện thoại: ");
+        JLabel lbTen = new JLabel("Tên: ");
+        JLabel lbNgaySinh = new JLabel("Ngày sinh: ");
+        JLabel lbGioiTinh = new JLabel("Giới tính: ");
+        JLabel lbDiem = new JLabel("Điểm: ");
+        JLabel lbHang = new JLabel("Hạng: ");
+
+        txtSoDienThoai = new JTextField(20);
+        txtTen = new JTextField(100);
+        txtNgaySinh = new JDateChooser();
+        chkGioiTinh = new JCheckBox("Nam");
+        txtDiem = new JTextField(20);
+        txtHang = new JTextField(100);
+
+        Box b = Box.createVerticalBox();
+        Box b1 = Box.createHorizontalBox();
+        b1.add(lbSoDienThoai);
+        b1.add(txtSoDienThoai);
+
+        Box b2 = Box.createHorizontalBox();
+        b2.add(lbTen);
+        b2.add(txtTen);
+        b2.add(Box.createHorizontalStrut(20));
+        b2.add(lbGioiTinh);
+        b2.add(chkGioiTinh);
+
+        Box b4 = Box.createHorizontalBox();
+        b4.add(lbNgaySinh);
+        b4.add(txtNgaySinh);
+
+        Box b3 = Box.createHorizontalBox();
+        b3.add(lbDiem);
+        b3.add(txtDiem);
+        b3.add(Box.createHorizontalStrut(20));
+        b3.add(lbHang);
+        b3.add(txtHang);
+        
+       
+
+        b.add(Box.createVerticalStrut(10));
+        b.add(b1);
+        b.add(Box.createVerticalStrut(10));
+        b.add(b2);
+        b.add(Box.createVerticalStrut(10));
+        b.add(b3);
+        b.add(Box.createVerticalStrut(10));
+        
+        Box bform = Box.createVerticalBox();
+        b.setBorder(BorderFactory.createTitledBorder("Thông tin khách hàng"));
+        bform.add(b);
+        
+        Box b5 = Box.createHorizontalBox();
+        JLabel lbtimTheoMa = new JLabel("Tìm theo mã: ");
+        txtTim = new JTextField(20); 
+        b5.add(Box.createHorizontalStrut(10));b5.add(lbtimTheoMa);b5.add(txtTim);
+        JLabel lbLogo = new JLabel(createResizedIcon("icons/search.png", 50, 50));
+        b5.add(lbLogo);
+        b5.add(Box.createHorizontalStrut(1000));
+        bform.add(Box.createVerticalStrut(10));
+        bform.add(b5);
+        bform.add(Box.createVerticalStrut(10));
+        
+        add(bform, BorderLayout.NORTH);
+
+        lbTen.setPreferredSize(lbSoDienThoai.getPreferredSize());
+        lbNgaySinh.setPreferredSize(lbSoDienThoai.getPreferredSize());
+        lbDiem.setPreferredSize(lbSoDienThoai.getPreferredSize());
+
+        // Phần Center - Bảng
+        String[] columnNames = {"Số điện thoại", "Tên", "Ngày sinh", "Giới tính", "Điểm", "Hạng"};
+
+        modelKhachHang = new DefaultTableModel(columnNames, 0);
+		tableKhachHang = new JTable(modelKhachHang);
+		add(new JScrollPane(tableKhachHang), BorderLayout.CENTER);
+
+        // Phần South - Nút Thêm, Xóa, Sửa
+        JPanel southPanel = new JPanel();
+        btnThem = new JButton("Thêm");
+        btnXoa = new JButton("Xóa");
+        btnSua = new JButton("Sửa");
+
+        btnThem.addActionListener(this);
+        btnXoa.addActionListener(this);
+        btnSua.addActionListener(this);
+
+        southPanel.add(btnThem);
+        southPanel.add(btnXoa);
+        southPanel.add(btnSua);
+
+        add(southPanel, BorderLayout.SOUTH);
+    }
+	public ImageIcon createResizedIcon(String iconPath, int width, int height) {
+		ImageIcon originalIcon = new ImageIcon(iconPath);
+		Image image = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return new ImageIcon(image);
+	}
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Xử lý sự kiện khi nhấn các nút Thêm, Xóa, Sửa
+        if (e.getSource() == btnThem) {
+            // Xử lý nút Thêm
+            // Thêm dữ liệu từ các JTextField vào bảng
+        } else if (e.getSource() == btnXoa) {
+            // Xử lý nút Xóa
+            // Xóa dòng được chọn từ bảng
+        } else if (e.getSource() == btnSua) {
+            // Xử lý nút Sửa
+            // Sửa dữ liệu của dòng được chọn từ bảng
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Quan Ly Khach Hang");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.getContentPane().add(new QuanLyKhachHang_GUI());
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        });
+    }
+}

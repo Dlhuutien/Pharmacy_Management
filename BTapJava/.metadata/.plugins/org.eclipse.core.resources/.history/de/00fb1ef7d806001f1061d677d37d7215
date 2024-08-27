@@ -1,0 +1,52 @@
+package entity;
+
+public class ChiTietHoaDon {
+	private Thuoc thuoc;
+	private HoaDon hoaDon;
+	private int soLuong;
+	private double donGia;
+	//cons
+	public double getThanhTien() {
+		return soLuong*donGia;
+	}
+	public Thuoc getThuoc() {
+		return thuoc;
+	}
+	public void setThuoc(Thuoc thuoc) {
+		this.thuoc = thuoc;
+	}
+	public HoaDon getHoaDon() {
+		return hoaDon;
+	}
+	public void setHoaDon(HoaDon hoaDon) {
+		this.hoaDon = hoaDon;
+	}
+	public int getSoLuong() {
+		return soLuong;
+	}
+	public void setSoLuong(int soLuong) {
+		this.soLuong = soLuong;
+	}
+	public double getDonGia() {
+		return donGia;
+	}
+	public void setDonGia(double donGia) {
+		this.donGia = donGia;
+	}
+	public ChiTietHoaDon(Thuoc thuoc, HoaDon hoaDon, int soLuong, double donGia) {
+		super();
+		this.thuoc = thuoc;
+		this.hoaDon = hoaDon;
+		this.soLuong = soLuong;
+		this.donGia = donGia;
+	}
+	public ChiTietHoaDon() {
+		super();
+	}
+	@Override
+	public String toString() {
+		return "ChiTietHoaDon [thuoc=" + thuoc + ", hoaDon=" + hoaDon + ", soLuong=" + soLuong + ", donGia=" + donGia
+				+ "]";
+	}
+	
+}

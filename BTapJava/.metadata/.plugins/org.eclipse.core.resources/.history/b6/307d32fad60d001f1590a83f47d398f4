@@ -1,0 +1,13 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.time.LocalDate;
+import java.util.List;
+
+import entities.ChiTietHoaDon;
+
+public interface ChiTietHoaDonDAO extends Remote{
+	public List<Object[]> getThongKeSanPhamByDateRange(LocalDate fromDate, LocalDate toDate) throws RemoteException;
+	public void themChiTietHoaDon(ChiTietHoaDon hd) throws RemoteException;
+}

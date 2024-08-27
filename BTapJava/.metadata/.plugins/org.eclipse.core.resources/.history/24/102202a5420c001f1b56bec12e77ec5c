@@ -1,0 +1,11 @@
+package dao;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+import entities.TaiKhoanNhanVien;
+
+
+public interface TaiKhoanNhanVienDAO extends Remote{
+	public boolean create(TaiKhoanNhanVien tk) throws 
+}

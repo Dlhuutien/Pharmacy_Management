@@ -1,0 +1,36 @@
+package app;
+
+import java.rmi.AlreadyBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+import jakarta.persistence.EntityManager;
+import dao.*;
+import services.*;
+
+public class ServerRMI {
+	public static void main(String[] args) throws RemoteException, AlreadyBoundException{
+		Registry registry = LocateRegistry.createRegistry(2005);
+		
+		EntityManagerFactoryUtil entityManagerFactory = new EntityManagerFactoryUtil();
+		EntityManager entityManager = entityManagerFactory.getEntityManager();
+	
+		DangNhapDAO dangNhapDAO = new DangNhap_Service(entityManager);
+		registry.bind("DangNhapDAO", dangNhapDAO);
+		
+		DoiMatKhauDAO doiMatKhauDAO = new DoiMatKhau_Service(entityManager);
+		registry.bind("DoiMatKhauDAO", doiMatKhauDAO);
+		
+		QuanLyDAO quanLyDAO = new QuanLy_Service(entityManager);
+		registry.bind("QuanLyDAO", quanLyDAO);
+		
+		NhanVienDAO nhanVienDAO = new NhanVien_Service(entityManager);
+		registry.bind("NhanVienDAO", nhanVienDAO);
+		
+		TaiKhoanNhanVienDAO taiKhoanNhanVienDAO = new TaiKhoanNhanVien_Service(entityManager);
+		registry.bind("TaiKhoanNhanVienDAO", taiKhoanNhanVienDAO);
+		
+		System.out.println("RMI Server ready");
+	}
+}

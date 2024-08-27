@@ -1,0 +1,214 @@
+package gui;
+
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+import com.toedter.calendar.JDateChooser;
+
+import connectDB.ConnectDB;
+import dao.NhanVien_DAO;
+import dao.QuanLy_DAO;
+import dao.TaiKhoanNhanVien_DAO;
+import entity.NhanVien;
+import entity.QuanLy;
+import entity.TaiKhoanNhanVien;
+import entity.TaiKhoanQuanLy;
+
+public class Quanly_UI extends JFrame implements ActionListener {
+	private JLabel txtMaQL;
+	private JLabel txtTenQL;
+	private JButton btnTaoHoaDon;
+	private JButton btnXemHoaDon;
+	private JButton btnQuanLyNhanVien;
+	private JButton btnDoanhThu;
+	private JButton btnXemThongTin;
+	private JButton btnDangXuat;
+	private JButton btnQuanLyThuoc;
+	private NhanVien_DAO nv_dao;
+	private TaiKhoanNhanVien_DAO tk_dao;
+	private QuanLy_DAO ql_dao;
+	private XemThongTin_GUI info;
+	private QuanLy ql;
+	private QuanLyNhanVien_GUI qlnv;
+	private QuanLyThuoc_GUI qlt;
+	private CardLayout cardLayout;
+	private JPanel cardPanel;
+
+	public Quanly_UI(TaiKhoanQuanLy currentuser) {
+		setTitle("GIAO DIEN CHO QUAN LY");
+		this.setLocationRelativeTo(null);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
+//		setResizable(false);
+		try {
+			ConnectDB.getInstance().connect();
+
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+        
+//        QuanLyNhanVien_GUI quanLyNhanVienUI = new QuanLyNhanVien_GUI();
+//        XemThongTin_GUI xemThongTinUI = new XemThongTin_GUI(currentuser);
+//	      Quanly_UI quanLyUI = new Quanly_UI(currentuser);
+
+        qlnv = new QuanLyNhanVien_GUI();
+		info = new XemThongTin_GUI(currentuser);
+		qlt = new QuanLyThuoc_GUI();
+		
+        cardPanel.add(qlnv, "QuanLyNhanVienUI");
+        cardPanel.add(info, "XemThongTinUI");
+        cardPanel.add(qlt, "QuanLyThuocUI");
+
+        add(cardPanel, BorderLayout.CENTER);
+		tk_dao = new TaiKhoanNhanVien_DAO();
+		nv_dao = new NhanVien_DAO();
+		ql_dao = new QuanLy_DAO();
+		createTit(currentuser);
+		createMenu();
+		btnQuanLyNhanVien.addActionListener(this);
+		btnXemThongTin.addActionListener(this);
+		btnQuanLyThuoc.addActionListener(this);
+	}
+
+	public void createTit(TaiKhoanQuanLy currentuser) {
+		JPanel bTieuDe = new JPanel();
+		bTieuDe.setLayout(new BoxLayout(bTieuDe, BoxLayout.X_AXIS));
+		bTieuDe.setBackground(Color.WHITE);
+
+		JLabel lbLogo = new JLabel(createResizedIcon("icons/logo.png", 100, 80));
+		JLabel lbTieuDe = new JLabel("Quản lý bán thuốc Nhân Ngọc");
+		lbTieuDe.setFont(new Font("Arial", Font.BOLD, 30));
+		lbTieuDe.setForeground(Color.RED);
+
+		ql = ql_dao.getQuanLyTheoMaQL(currentuser.getTaiKhoan());
+		JLabel lbMaQL = new JLabel("Mã quản lý: ");
+		txtMaQL = new JLabel(ql.getMaQL());
+		JLabel lbTen = new JLabel("Tên quản lý: ");
+		txtTenQL = new JLabel(ql.getTenQL());
+
+		Box bIF = Box.createVerticalBox();
+		Box b1, b2;
+		b1 = Box.createHorizontalBox();
+		b2 = Box.createHorizontalBox();
+		b1.add(lbMaQL);
+		b1.add(txtMaQL);
+		b2.add(lbTen);
+		b2.add(txtTenQL);
+		bIF.add(b1);
+		bIF.add(b2);
+
+		bTieuDe.add(Box.createHorizontalStrut(44)); // Để tạo khoảng cách giữa logo và tiêu đề
+		bTieuDe.add(lbLogo);
+		bTieuDe.add(Box.createHorizontalGlue()); // Để căn phải
+		bTieuDe.add(lbTieuDe);
+		bTieuDe.add(Box.createHorizontalGlue()); // Để căn giữa
+		bTieuDe.add(bIF);
+		bTieuDe.add(Box.createHorizontalStrut(10)); // Để tạo khoảng cách giữa tiêu đề và thông tin
+
+		lbMaQL.setPreferredSize(lbTen.getPreferredSize());
+
+		add(bTieuDe, BorderLayout.NORTH);
+	}
+
+	public void createMenu() {
+		JPanel pMenu = new JPanel();
+		pMenu.setLayout(new GridLayout(10, 1, 0, 3));
+		pMenu.setBorder(BorderFactory.createTitledBorder("Chọn chức năng"));
+		pMenu.setBackground(Color.WHITE);
+		btnTaoHoaDon = createButton("Tạo Hóa Đơn", "icons/bill.png");
+		btnXemHoaDon = createButton("Xem Hóa Đơn", "icons/bills.png");
+		btnXemHoaDon = createButton("Quản lý khách hàng", "icons/customer.png");
+		btnQuanLyNhanVien = createButton("Quản Lý Nhân Viên", "icons/Reception.png");
+		btnQuanLyThuoc = createButton("Quản Lý Thuốc", "icons/update.png");
+		btnDoanhThu = createButton("Thống Kê", "icons/analysis.png");
+		btnXemThongTin = createButton("Thông tin", "icons/admin.png");
+		btnDangXuat = createButton("Đăng xuất", "icons/logout.png");
+		pMenu.add(btnTaoHoaDon);
+		pMenu.add(btnXemHoaDon);
+		pMenu.add(btnQuanLyNhanVien);
+		pMenu.add(btnQuanLyThuoc);
+		pMenu.add(btnDoanhThu);
+		pMenu.add(btnXemThongTin);
+		pMenu.add(Box.createHorizontalBox());
+		pMenu.add(Box.createHorizontalBox());
+		pMenu.add(Box.createHorizontalBox());
+		pMenu.add(btnDangXuat);
+		add(pMenu, BorderLayout.WEST);
+	}
+
+	public ImageIcon createResizedIcon(String iconPath, int width, int height) {
+		ImageIcon originalIcon = new ImageIcon(iconPath);
+		Image image = originalIcon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+		return new ImageIcon(image);
+	}
+
+	private JButton createButton(String text, String iconPath) {
+		JButton button = new JButton(text);
+		button.setHorizontalAlignment(SwingConstants.LEFT);
+//        button.setOpaque(false); // Vô hiệu hóa màu nền của nút
+//        button.setContentAreaFilled(false); // Vô hiệu hóa vùng chứa nội dung nền của nút
+//        button.setBorderPainted(false); // Vô hiệu hóa viền của nút
+		button.setFocusPainted(false);
+		ImageIcon buttonIcon = new ImageIcon(iconPath);
+		Image image = buttonIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+		ImageIcon icon = new ImageIcon(image);
+		button.setIcon(icon);
+		return button;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object o = e.getSource();
+		if (o.equals(btnQuanLyNhanVien)) {
+			 cardLayout.show(cardPanel, "QuanLyNhanVienUI");
+		}
+		if (o.equals(btnXemThongTin)) {
+			cardLayout.show(cardPanel, "XemThongTinUI");
+		}
+		if(o.equals(btnQuanLyThuoc)) {
+			cardLayout.show(cardPanel, "QuanLyThuocUI");
+		}
+	}
+}
